@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CallReporting:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/CallReporting_jar</output-path>
+    <root id="archive" name="CallReporting.jar">
+      <element id="module-output" name="CallReporting" />
+    </root>
+  </artifact>
+</component>
