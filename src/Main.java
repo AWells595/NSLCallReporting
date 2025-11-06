@@ -12,6 +12,14 @@ import java.util.Date;
 *  Created by Alex Wells for NSL call monitoring
 *  TODO create main menu to drive program through GUI
 *  TODO create exporter to export as an excel sheet
+*  TODO count missed calls
+*  TODO fix known error where anonymous missed calls crashes system
+*  TODO compare missed calls to answered inbound calls
+*  TODO compare missed call phone #s to answered inbound phone # and outbound dialed calls
+*   to determine that messages were returned
+*  TODO record first and last call times
+*  TODO record approximate daily call duration
+*  TODO read monthly call stats and provide totals and averages for all stats
 *
 */
 
@@ -78,16 +86,18 @@ public class Main {
         counter.countCalls();
         JFrame frame = new JFrame("Call Stats");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(250, 200);
+        frame.setSize(250, 300);
         frame.setLayout(new BorderLayout());
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1, 10, 10)); // one column, multiple rows
 
-        panel.add(createCenteredLabel("     Total calls: " + counter.getTotalCalls()));
-        panel.add(createCenteredLabel("   Inbound calls: " + counter.getInboundCalls()));
-        panel.add(createCenteredLabel("  Outbound calls: " + counter.getRightPartyOutbound()));
-        panel.add(createCenteredLabel("Voice mails left: " + counter.getVoiceMails()));
+        panel.add(createCenteredLabel("         Total calls: " + counter.getTotalCalls()));
+        panel.add(createCenteredLabel("       Inbound calls: " + counter.getInboundCalls()));
+        panel.add(createCenteredLabel("      Outbound calls: " + counter.getRightPartyOutbound()));
+        panel.add(createCenteredLabel("    Voice mails left: " + counter.getVoiceMails()));
+        panel.add(createCenteredLabel("        Missed Calls: " + counter.getMissedCalls()));
+        panel.add(createCenteredLabel("Missed Calls Handled: " + counter.voiceMailsReturned()));
 
         frame.add(panel, BorderLayout.CENTER);
 
