@@ -1,7 +1,10 @@
 import java.io.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 public class CallCounter {
     private final int INTERNAL_EXTENSION_LENGTH = 3;
@@ -16,6 +19,8 @@ public class CallCounter {
     private ArrayList<String> missedPhoneNumbers;
     private ArrayList<String> answeredPhoneNumbers;
     private ArrayList<String> calledPhoneNumbers;
+    private ArrayList<LocalTime> callTimes;
+
     private File file;
     private String targetDate;
 
@@ -28,15 +33,18 @@ public class CallCounter {
     }
 
     public CallCounter(File csvFile, String targetDate) {
+        this.file = csvFile;
+        this.targetDate = targetDate;
+
         this.inboundCalls = 0;
         this.voiceMails = 0;
         this.rightPartyOutbound = 0;
         this.missedCalls = 0;
-        this.file = csvFile;
-        this.targetDate = targetDate;
+
         missedPhoneNumbers = new ArrayList<>();
         answeredPhoneNumbers = new ArrayList<>();
         calledPhoneNumbers = new ArrayList<>();
+        callTimes = new ArrayList<>();
     }
 
     public CallCounter(File filePath) {
@@ -89,6 +97,14 @@ public class CallCounter {
         return rightPartyOutbound;
     }
 
+    public LocalTime getFirstCallTime() {
+        return Collections.min(callTimes);
+    }
+
+    public LocalTime getLastCallTime() {
+        return Collections.max(callTimes);
+    }
+
     public int voiceMailsReturned() {
         int returnedCalls = 0;
         for(String call:missedPhoneNumbers) {
@@ -97,6 +113,11 @@ public class CallCounter {
             }
         }
         return returnedCalls;
+    }
+
+    private void addCallTime(String callTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
+        this.callTimes.add(LocalTime.parse(callTime.toUpperCase(), formatter));
     }
 
     /**
@@ -174,6 +195,7 @@ public class CallCounter {
                 if (callType.equals("Received")) {
                     if (isExternal(call[3])) {
                         this.inboundCalls++;
+                        addCallTime(call[1]);
                         answeredPhoneNumbers.add(call[3]);
                     }
                 }
@@ -187,6 +209,7 @@ public class CallCounter {
                     String callDuration = call[call.length - 1].trim();
                     if (isExternal(call[7])) {
                         countOutboundCalls(callDuration);
+                        addCallTime(call[1]);
                         calledPhoneNumbers.add(call[7]);
                     }
                 }
